@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="fw-bold mb-4" style="border-left: 5px solid var(--accent-color); padding-left: 15px;">
+        Actualités Musicales
+    </h2>
+
+    <div class="mb-5 d-flex flex-wrap gap-2">
+        <a href="{{ url_for('list_news') }}" 
+           class="btn {% if not request.args.get('category') %}btn-primary{% else %}btn-outline-light{% endif %} rounded-pill px-4">
+           Tout
+        </a>
+        
+        <a href="{{ url_for('list_news', category='Jazz') }}" 
+           class="btn {% if request.args.get('category') == 'Jazz' %}btn-primary{% else %}btn-outline-light{% endif %} rounded-pill px-4">
+           Jazz
+        </a>
+        
+        <a href="{{ url_for('list_news', category='Rock') }}" 
+           class="btn {% if request.args.get('category') == 'Rock' %}btn-primary{% else %}btn-outline-light{% endif %} rounded-pill px-4">
+           Rock
+        </a>
+        
+        <a href="{{ url_for('list_news', category='Electro') }}" 
+           class="btn {% if request.args.get('category') == 'Electro' %}btn-primary{% else %}btn-outline-light{% endif %} rounded-pill px-4">
+           Electro
+        </a>
+    </div>
+
+    {% for cat in categories %}
+        {% if cat.news %} 
+        <div class="mb-5">
+            <h3 class="text-primary fw-bold mb-4">
+                <i class="bi bi-music-note-list"></i> {{ cat.name }}
+            </h3>
+            
+            <div class="row g-4">
+                {% for article in cat.news %}
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-lg" style="background: rgba(255, 255, 255, 0.05); border-radius: 20px; transition: 0.3s;">
+                        <div class="card-body p-4 d-flex flex-column">
+                            <h5 class="fw-bold text-white mb-2">{{ article.title }}</h5>
+                            
+                            <p class="text-white-50 small mb-3">
+                                <i class="bi bi-calendar3"></i> Publié le {{ article.date_posted.strftime('%d/%m/%Y') }}
+                            </p>
+                            
+                            <p class="text-light opacity-75">
+                                {{ article.content }}
+                            </p>
+                            
+                            <div class="mt-auto pt-3 border-top border-secondary d-flex justify-content-between align-items-center">
+                                <span class="badge bg-dark text-info border border-info">#{{ cat.name }}</span>
+                                <a href="#" class="btn btn-sm btn-link text-primary p-0 text-decoration-none fw-bold">Lire la suite →</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="text-center py-5">
+            <p class="text-white-50 h5">Aucune actualité trouvée dans cette catégorie.</p>
+        </div>
+    {% endfor %}
+</div>
+
+<style>
+    /* Effet de survol sur les cartes */
+    .card:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.08) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+</style>
+{% endblock %}
